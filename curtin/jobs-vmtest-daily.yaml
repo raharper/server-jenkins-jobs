@@ -63,6 +63,8 @@
           export CURTIN_VMTEST_CURTIN_EXE="curtin-from-container $LXC_NAME curtin"
           export CURTIN_VMTEST_SKIP_BY_DATE_BUGS="*"
 
+          # ensure directories are writable for non-root delete
+          find output -perm 0550  | xargs -i chmod -R +w {}
           rm -Rf curtin-* output
           git clone --branch=master https://git.launchpad.net/curtin curtin-$BUILD_NUMBER
           cd curtin-$BUILD_NUMBER

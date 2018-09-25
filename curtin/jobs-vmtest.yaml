@@ -140,12 +140,13 @@
             if [ -n "${vmtest_add_repos}" ]; then
                 export CURTIN_VMTEST_ADD_REPOS=${vmtest_add_repos}
             fi
-            
+
             export CURTIN_VMTEST_KEEP_DATA_FAIL=all
             export CURTIN_VMTEST_TAR_DISKS=1
-            
-            rm -Rf curtin-*
-            rm -Rf output
+
+            # ensure directories are writable for non-root delete
+            find output -perm 0550  | xargs -i chmod -R +w {}
+            rm -Rf curtin-* output
             git clone --branch=${landing_candidate_branch} ${landing_candidate} curtin-${BUILD_NUMBER}
             cd curtin-${BUILD_NUMBER}
             git remote add upstream https://git.launchpad.net/curtin
