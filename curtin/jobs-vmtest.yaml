@@ -149,10 +149,10 @@
             if [ -n "${vmtest_filters}" ]; then
                 f=""
                 for f in ${vmtest_filters}; do
-                    filter_args="${filter_args} --filter ${f}"
+                    filter_args="$filter_args --filter=$f"
                 done
             fi
-            echo "test filter args: \"${filter_args}\""
+            echo "test filter args: \"$filter_args\""
 
             # Helpful in debugging, but fill up Jenkins if all test fail
             # export CURTIN_VMTEST_KEEP_DATA_FAIL=all
@@ -167,7 +167,7 @@
 
             ./tools/vmtest-system-setup
             set +e
-            ./tools/jenkins-runner -p4 ${filter_args} ${nose_args}
+            ./tools/jenkins-runner -p4 $filter_args ${nose_args}
             RET=$?
 
             cd ${WORKSPACE}
