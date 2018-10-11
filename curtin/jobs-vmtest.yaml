@@ -121,6 +121,9 @@
         - string:
             name: vmtest_add_repos
             default: "proposed"
+        - string:
+            name: vmtest_filters
+            default: "target_distro=ubuntu"
     properties:
       - build-discarder:
           num-to-keep: 5
@@ -141,6 +144,16 @@
                 export CURTIN_VMTEST_ADD_REPOS=${vmtest_add_repos}
             fi
 
+            # construct vmtest filters
+            filter_args=""
+            if [ -n "${vmtest_filters}" ]; then
+                f=""
+                for f in ${vmtest_filters}; do
+                    filter_args="${filter_args} --filter ${f}"
+                done
+            fi
+            echo "test filter args: \"${filter_args}\""
+
             # Helpful in debugging, but fill up Jenkins if all test fail
             # export CURTIN_VMTEST_KEEP_DATA_FAIL=all
             # export CURTIN_VMTEST_TAR_DISKS=1
@@ -155,7 +168,7 @@
             ./tools/vmtest-system-setup
             set +e
             # Only run -proposed on Ubuntu
-            ./tools/jenkins-runner -p4 --filter target_distro=ubuntu ${nose_args}
+            ./tools/jenkins-runner -p4 ${filter_args} ${nose_args}
             RET=$?
 
             cd ${WORKSPACE}
