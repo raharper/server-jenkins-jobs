@@ -167,7 +167,6 @@
 
             ./tools/vmtest-system-setup
             set +e
-            # Only run -proposed on Ubuntu
             ./tools/jenkins-runner -p4 ${filter_args} ${nose_args}
             RET=$?
 
