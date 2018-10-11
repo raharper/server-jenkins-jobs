@@ -62,6 +62,8 @@
     name: curtin-vmtest-proposed-x
     node: torkoal
     auth-token: BUILD_ME
+    parameters:
+        - vmtest-parallel
     properties:
       - build-discarder:
           num-to-keep: 5
@@ -71,11 +73,14 @@
     builders:
       - vmtest-proposed:
           release: xenial
+          vmtest_parallel: vmtest_parallel
 
 - job:
     name: curtin-vmtest-proposed-b
     node: torkoal
     auth-token: BUILD_ME
+    parameters:
+        - vmtest-parallel
     properties:
       - build-discarder:
           num-to-keep: 5
@@ -85,6 +90,7 @@
     builders:
       - vmtest-proposed:
           release: bionic
+          vmtest_parallel: vmtest_parallel
 
 - builder:
     name: vmtest-proposed
@@ -107,7 +113,7 @@
           ./tools/vmtest-system-setup
           ./tools/curtainer --"$TYPE" ubuntu-daily:"$RELEASE" "$LXC_NAME"
           set +e
-          ./tools/jenkins-runner -p 2
+          ./tools/jenkins-runner -p ${vmtest_parallel}
           RET=$?
 
           cd $WORKSPACE

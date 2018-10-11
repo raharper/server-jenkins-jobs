@@ -20,6 +20,7 @@
     node: torkoal
     parameters:
         - nose-args
+        - vmtest-parallel
     triggers:
         - timed: "H 4 * * *"
     properties:
@@ -32,12 +33,14 @@
       - vmtest-daily:
           release: trusty
           nose_args: nose_args
+          vmtest_parallel: vmtest_parallel
 
 - job:
     name: curtin-vmtest-daily-x
     node: torkoal
     parameters:
         - nose-args
+        - vmtest-parallel
     triggers:
         - timed: "H 8 * * *"
     properties:
@@ -50,6 +53,7 @@
       - vmtest-daily:
           release: xenial
           nose_args: nose_args
+          vmtest_parallel: vmtest_parallel
 
 - builder:
     name: vmtest-daily
@@ -72,7 +76,7 @@
           ./tools/curtainer --"$TYPE" ubuntu-daily:"$RELEASE" --source=src "$LXC_NAME"
           cd src
           set +e
-          ./tools/jenkins-runner -p 2 ${nose_args}
+          ./tools/jenkins-runner -p${vmtest_parallel} ${nose_args}
           RET=$?
 
           cd $WORKSPACE
